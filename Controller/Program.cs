@@ -26,6 +26,7 @@ namespace Controller
         static void Main()
         {
             Console.Title = "Steam Achievement Manager";
+            Console.SetOut(new DatedTextWriter());
 
             Random rnd = new Random();
             var settings = GetSettings();
