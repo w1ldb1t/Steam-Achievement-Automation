@@ -7,4 +7,5 @@
     NoAchievementsFound = 4,
     FailedToCommit = 5,
     InvalidArgumentCount = 6,
+    AchievementParseFailure = 7,
 }

@@ -27,9 +27,9 @@ namespace Agent
 				foreach (JToken result in results)
 					achievements.Add(new Achievement(result.SelectToken("displayName").ToString(), result.SelectToken("name").ToString()));
 			}
-			catch (Exception ex)
+			catch (Exception)
             {
-				Console.WriteLine("Exception occured! Error message: {0}", ex.Message);
+				return null;
             }
 
 			return achievements;
@@ -54,6 +54,8 @@ namespace Agent
 				return (int)ErrorCode.FailedToFetchStats;
 
 			List<Achievement> achievements = GetAchievementList(apiKey, appId);
+			if(achievements == null)
+				return (int)ErrorCode.FailedToFetchStats;
 			if (achievements.Count == 0)
 				return (int)ErrorCode.NoAchievementsFound;
 				
@@ -64,7 +66,6 @@ namespace Agent
 			if (!SteamUserStats.StoreStats())
 				return (int)ErrorCode.FailedToCommit;
 
-			Console.WriteLine("Achievement \"{0}\" unlocked!", achievement.GetDisplayName());
 			SteamAPI.Shutdown();
 			return (int)ErrorCode.Success;
 		}
