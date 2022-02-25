@@ -1,0 +1,9 @@
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Agent.exe.config
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Agent.exe
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Agent.pdb
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.csproj.AssemblyReference.cache
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.csproj.SuggestedBindingRedirects.cache
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.csproj.CoreCompileInputs.cache
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.csproj.CopyComplete
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.exe
+C:\Users\Michelangelo\Desktop\SAO\Agent\obj\x86\Release\Agent.pdb

@@ -1,0 +1,9 @@
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.csproj.AssemblyReference.cache
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.csproj.SuggestedBindingRedirects.cache
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.csproj.CoreCompileInputs.cache
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.csproj.CopyComplete
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Controller.exe.config
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Controller.exe
+C:\Users\Michelangelo\Desktop\SAO\Bin\Release\Controller.pdb
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.exe
+C:\Users\Michelangelo\Desktop\SAO\Controller\obj\Release\Controller.pdb
