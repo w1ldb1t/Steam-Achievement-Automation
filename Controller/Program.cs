@@ -14,7 +14,8 @@ namespace Controller
             {
                 var jsonText = File.ReadAllText("settings.json");
                 JObject schema = JObject.Parse(jsonText);
-                return new Settings(schema["ApiKey"].ToString(), schema["AppId"].ToString());
+                return new Settings(schema["apiKey"].ToString(), schema["appId"].ToString(), 
+                                    schema["minMinutes"].ToObject<int>(), schema["maxMinutes"].ToObject<int>());
             }
             catch(Exception)
             {
@@ -39,7 +40,7 @@ namespace Controller
 
             while (true)
             {
-                int mins = rnd.Next(5, 180);
+                int mins = rnd.Next(settings.MinMinutes, settings.MaxMinutes);
                 Console.WriteLine("Unlocking next achievement in {0} minutes ...", mins);
                 Thread.Sleep((int)TimeSpan.FromMinutes(mins).TotalMilliseconds);
 

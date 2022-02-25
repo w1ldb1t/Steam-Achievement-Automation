@@ -9,7 +9,9 @@ The application does not need any special patameters. You just need to put a `se
 ```json
 {
     "ApiKey": "A98XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "AppId": "1569040"
+    "AppId": "1569040",
+    "minMinutes": "5",
+    "maxMinutes": "150"
 }
 ```
 The `ApiKey` you get it directly through [the Steam portal](https://steamcommunity.com/dev/apikey). The `AppId` is the unique Steam identifier for the game you want to unlock achievements for, and you can find it [through SteamDB](https://steamdb.info/apps/).
