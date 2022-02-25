@@ -6,4 +6,5 @@
     FailedToFetchStats = 3,
     NoAchievementsFound = 4,
     FailedToCommit = 5,
+    InvalidArgumentCount = 6,
 }

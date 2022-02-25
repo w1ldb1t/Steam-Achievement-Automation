@@ -36,6 +36,9 @@ namespace Agent
 		}
 
 		public static int Main(string[] args) {
+			if (args.Length != 2)
+				return (int)ErrorCode.InvalidArgumentCount;
+
 			string apiKey = args[0];
 			string appId = args[1];
 
