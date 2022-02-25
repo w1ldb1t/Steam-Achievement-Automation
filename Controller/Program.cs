@@ -10,17 +10,29 @@ namespace Controller
     {
         public static Settings GetSettings()
         {
-            var jsonText = File.ReadAllText("settings.json");
-            JObject schema = JObject.Parse(jsonText);
-            return new Settings(schema["ApiKey"].ToString(), schema["AppId"].ToString());
+            try
+            {
+                var jsonText = File.ReadAllText("settings.json");
+                JObject schema = JObject.Parse(jsonText);
+                return new Settings(schema["ApiKey"].ToString(), schema["AppId"].ToString());
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         }
 
         static void Main()
         {
             Console.Title = "Steam Achievement Manager";
 
-            var settings = GetSettings();
             Random rnd = new Random();
+            var settings = GetSettings();
+            if(settings == null)
+            {
+                Console.WriteLine("Settings file could not be found!");
+                return;
+            }
 
             // We need this, otherwise steam api won't be able to initialize
             File.WriteAllText(string.Format("{0}\\steam_appid.txt", AppDomain.CurrentDomain.BaseDirectory), settings.AppId);
@@ -58,6 +70,10 @@ namespace Controller
                         break;
                     case ErrorCode.FailedToCommit:
                         Console.WriteLine("Achievement changes could not be saved!");
+                        break;
+                    case ErrorCode.InvalidArgumentCount:
+                        Console.WriteLine("Argument mismatch! Make sure all files are on the same version!");
+                        Environment.Exit(1);
                         break;
                     default:
                         Console.WriteLine("Unknown error code {0}.", process.ExitCode);
