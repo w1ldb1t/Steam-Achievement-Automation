@@ -2,23 +2,15 @@
 {
     class Achievement
     {
-        private string Name;
-        private string Id;
+        public string Id { get; private set; }
+        public double Percent { get; private set; }
+        public bool Unlocked { get; private set; }
 
-        public Achievement(string name, string id)
+        public Achievement(string id, double percent, bool unlocked)
         {
-            this.Name = name;
             this.Id = id;
-        }
-
-        public string GetDisplayName()
-        {
-            return Name;
-        }
-
-        public string GetId()
-        {
-            return Id;
+            this.Percent = percent;
+            this.Unlocked = unlocked;
         }
     }
 }

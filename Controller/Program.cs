@@ -14,7 +14,7 @@ namespace Controller
             {
                 var jsonText = File.ReadAllText("settings.json");
                 JObject schema = JObject.Parse(jsonText);
-                return new Settings(schema["apiKey"].ToString(), schema["appId"].ToString(), 
+                return new Settings(schema["apiKey"].ToString(), schema["steamId64"].ToString(), schema["appId"].ToString(), 
                                     schema["minMinutes"].ToObject<int>(), schema["maxMinutes"].ToObject<int>());
             }
             catch(Exception)
@@ -45,7 +45,7 @@ namespace Controller
                 Console.WriteLine("Unlocking next achievement in {0} minutes ...", mins);
                 Thread.Sleep((int)TimeSpan.FromMinutes(mins).TotalMilliseconds);
 
-                string procArgs = String.Format("{0} {1}", settings.ApiKey, settings.AppId);
+                string procArgs = String.Format("{0} {1} {2}", settings.ApiKey, settings.SteamId64, settings.AppId);
                 Process process = Process.Start("agent.exe", procArgs);
                 process.WaitForExit();
                 ErrorCode exit_code = (ErrorCode)process.ExitCode;
