@@ -1,6 +1,6 @@
 # Steam Achievement Automation
 
-SAO is a console application built in C#, meant to be run exclusively on Windows. Even though it's much simpler and less fancy than [SAM](https://github.com/gibbed/SteamAchievementManager.git), it allows you to unlock Steam achievements over time, and also it does not alter your game hours (like [samrewritten](https://github.com/PaulCombal/SamRewritten)) while doing so.
+SAA is a console application built in C#, meant to be run exclusively on Windows. Even though it's much simpler and less fancy than [SAM](https://github.com/gibbed/SteamAchievementManager.git), it allows you to unlock Steam achievements over time, and also it does not alter your game hours (like [samrewritten](https://github.com/PaulCombal/SamRewritten)) while doing so.
 
 ## Usage
 
