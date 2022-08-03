@@ -9,8 +9,8 @@ The application does not need any special patameters. You just need to put a `se
 ```json
 {
     "ApiKey": "A98XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "steamId64": "76841153940544032",
-    "AppId": "1569040",
+    "steamId64": "7684XXXXXXXXXXXXX",
+    "AppId": ["1569040", "1238860"],
     "minMinutes": "5",
     "maxMinutes": "150"
 }

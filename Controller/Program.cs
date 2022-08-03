@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Net;
 
 namespace Controller
 {
@@ -65,6 +67,17 @@ namespace Controller
 
         private static NotifyIcon Tray = default(NotifyIcon);
         private static IntPtr CurrentWindow = default(IntPtr);
+        private static int _IsBusy = 0;
+
+        public static bool IsBusy
+        {
+            get { return (Interlocked.CompareExchange(ref _IsBusy, 1, 1) == 1); }
+            set
+            {
+                if (value) Interlocked.CompareExchange(ref _IsBusy, 1, 0);
+                else Interlocked.CompareExchange(ref _IsBusy, 0, 1);
+            }
+        }
 
         private static Settings GetSettings()
         {
@@ -72,7 +85,7 @@ namespace Controller
             {
                 var jsonText = File.ReadAllText("settings.json");
                 JObject schema = JObject.Parse(jsonText);
-                return new Settings(schema["apiKey"].ToString(), schema["steamId64"].ToString(), schema["appId"].ToString(),
+                return new Settings(schema["apiKey"].ToString(), schema["steamId64"].ToString(), schema["appId"].ToObject<List<string>>(),
                                     schema["minMinutes"].ToObject<int>(), schema["maxMinutes"].ToObject<int>());
             }
             catch (Exception)
@@ -81,29 +94,45 @@ namespace Controller
             }
         }
 
-        private static void UnlockAchievements()
+        private static string FetchGameName(string apiKey, string gameId)
+        {
+            string formattedUrl = String.Format("http://store.steampowered.com/api/appdetails?key={0}&appids={1}&l=english&format=json", apiKey, gameId);
+            WebRequest schemaReq = WebRequest.Create(formattedUrl);
+            Stream objStream = schemaReq.GetResponse().GetResponseStream();
+            StreamReader objReader = new StreamReader(objStream);
+            string response = objReader.ReadToEnd();
+
+            JObject schema = JObject.Parse(response);
+            var name = schema[gameId.ToString()]["data"]["name"].ToString();
+            // we cannot render TM symbol in Windows console
+            // might need to add other symbols as well
+            name = name.Replace('™', ' ');
+            return name;
+        }
+
+        private static void WorkThread(string apiKey, string steamId64, string appId, int minMinutes, int maxMinutes)
         {
             Random rnd = new Random();
-            // read settings given by the user
-            var settings = GetSettings();
-            if (settings == null)
-            {
-                Console.WriteLine("Settings file could not be found!");
-                return;
-            }
+            string gameName = FetchGameName(apiKey, appId);
 
-            // We need this, otherwise steam api won't be able to initialize
-            File.WriteAllText(string.Format("{0}\\steam_appid.txt", AppDomain.CurrentDomain.BaseDirectory), settings.AppId);
+            Console.WriteLine(String.Format("Unlocking achievements for {0} ...", gameName));
 
             while (true)
             {
                 // get a random interval of minutes between the min/max, that the app is going to sleep
-                int mins = rnd.Next(settings.MinMinutes, settings.MaxMinutes);
-                Console.WriteLine("Unlocking next achievement in {0} minutes ...", mins);
+                int mins = rnd.Next(minMinutes, maxMinutes);
+                // Console.WriteLine("Unlocking next achievement in {0} minutes ...", mins);
                 Thread.Sleep((int)TimeSpan.FromMinutes(mins).TotalMilliseconds);
 
+                while(IsBusy)
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                IsBusy = true;
+
+                // We need this, otherwise steam api won't be able to initialize
+                File.WriteAllText(string.Format("{0}\\steam_appid.txt", AppDomain.CurrentDomain.BaseDirectory), appId);
+
                 // create the args of the child process
-                string procArgs = String.Format("{0} {1} {2}", settings.ApiKey, settings.SteamId64, settings.AppId);
+                string procArgs = String.Format("{0} {1} {2}", apiKey, steamId64, appId);
                 // create the child process and wait for it to exit
                 Process process = Process.Start("agent.exe", procArgs);
                 process.WaitForExit();
@@ -113,7 +142,7 @@ namespace Controller
                 switch (exit_code)
                 {
                     case ErrorCode.Success:
-                        Console.WriteLine("New achievement unlocked!");
+                        Console.WriteLine(String.Format("New achievement unlocked for {0}", gameName));
                         break;
                     case ErrorCode.SteamNotRunning:
                         Console.WriteLine("Steam not running!");
@@ -128,8 +157,8 @@ namespace Controller
                         break;
                     case ErrorCode.NoAchievementsFound:
                         Console.WriteLine("No unlocked achievements found for current game!");
-                        Environment.Exit(1);
-                        break;
+                        IsBusy = false;
+                        return;
                     case ErrorCode.FailedToCommit:
                         Console.WriteLine("Achievement changes could not be saved!");
                         break;
@@ -141,6 +170,7 @@ namespace Controller
                         Console.WriteLine("Unknown error code {0}.", process.ExitCode);
                         break;
                 }
+                IsBusy = false;
             }
         }
 
@@ -193,8 +223,22 @@ namespace Controller
                 }
             }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
-            // start unlocking achievements
-            new Thread(UnlockAchievements).Start();
+            // read the configuration
+            Console.WriteLine("Reading settings.json ...");
+            var settings = GetSettings();
+            if (settings == null)
+            {
+                Console.WriteLine("Settings file could not be found!");
+                return;
+            }
+
+            Console.WriteLine("Spawning threads ...");
+            // spawn threads for every game that unlocks achievements
+            foreach (var app in settings.AppId.ToArray())
+            {
+                Thread thread = new Thread(() => WorkThread(settings.ApiKey, settings.SteamId64, app, settings.MinMinutes, settings.MaxMinutes));
+                thread.Start();
+            }
 
             // run event handler
             Application.Run();

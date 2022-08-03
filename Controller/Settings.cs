@@ -8,7 +8,7 @@ namespace Controller
 {
     public class Settings
     {
-        public Settings(string apiKey, string steamId64, string appId, int minMinutes, int maxMinutes)
+        public Settings(string apiKey, string steamId64, List<string> appId, int minMinutes, int maxMinutes)
         {
             ApiKey = apiKey;
             SteamId64 = steamId64;
@@ -17,9 +17,9 @@ namespace Controller
             MaxMinutes = maxMinutes;
         }
         public string ApiKey { get; private set; }
-        public string SteamId64 { get; set; }
-        public string AppId { get; private set; }
-        public int MinMinutes { get; set; }
-        public int MaxMinutes { get; set; }
+        public string SteamId64 { get; private set; }
+        public List<string> AppId { get; private set; }
+        public int MinMinutes { get; private set; }
+        public int MaxMinutes { get; private set; }
     }
 }
