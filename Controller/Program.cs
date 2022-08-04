@@ -106,13 +106,13 @@ namespace Controller
             var name = schema[gameId.ToString()]["data"]["name"].ToString();
             // we cannot render TM symbol in Windows console
             // might need to add other symbols as well
-            name = name.Replace('™', ' ');
+            name = name.Replace("™", String.Empty);
             return name;
         }
 
         private static void WorkThread(string apiKey, string steamId64, string appId, int minMinutes, int maxMinutes)
         {
-            Random rnd = new Random();
+            ThreadSafeRandom rnd = new ThreadSafeRandom(); 
             string gameName = FetchGameName(apiKey, appId);
 
             Console.WriteLine(String.Format("Unlocking achievements for {0} ...", gameName));
